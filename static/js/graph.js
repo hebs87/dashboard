@@ -8,9 +8,21 @@ function makeGraphs(error, salaryData) {
 
     //pass ndx variable, the crossfilter, to the function that is going to draw the graph, and pass it ndx
     //create one for each graph
+    show_discipline_selector(ndx);
+
     show_gender_balance(ndx);
 
     dc.renderAll();
+}
+
+//function for rendering Select menu
+function show_discipline_selector(ndx) {
+    dim = ndx.dimension(dc.pluck('discipline'));
+    group = dim.group()
+    
+    dc.selectMenu("#discipline-selector")
+        .dimension(dim)
+        .group(group);
 }
 
 //inside this function, we can now focus on specifically one graph - each graph will have its own function
