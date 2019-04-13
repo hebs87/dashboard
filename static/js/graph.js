@@ -9,6 +9,8 @@ function makeGraphs(error, salaryData) {
     salaryData.forEach(function(d) {
         //salary is = to an integer version of the salary
         d.salary = parseInt(d.salary);
+        //relates to scatter-plot - wrapping in square brackets rather than using dot notation as yrs.service in csv file has dot, so would cause problems
+        d.yrs_service = parseInt(d["yrs.service"]);
     });
 
 
@@ -23,6 +25,9 @@ function makeGraphs(error, salaryData) {
     show_gender_balance(ndx);
     show_average_salary(ndx);
     show_rank_distribution(ndx);
+
+    //scatter plots
+    show_service_to_salary_correlation(ndx);
 
     dc.renderAll();
 }
@@ -216,4 +221,50 @@ function show_rank_distribution(ndx) {
         .xUnits(dc.units.ordinal)
         .legend(dc.legend().x(320).y(20).itemHeight(15).gap(5))
         .margins({top: 10, right: 100, bottom: 30, left: 30});
+}
+
+//#service-salary scatter plot
+function show_service_to_salary_correlation(ndx) {
+    //add colors to scatter plot - pick an attribute and map the values in that attribute to the colors we want
+    var genderColors = d3.scale.ordinal()
+        .domain("Female", "Male")
+        .range(["blue", "pink"]);
+    
+    //first dim on years of service
+    var serviceDim = ndx.dimension(dc.pluck("yrs_service"));
+    //second dim returns array with two parts - one being length of service and other being the salary - this allows us to plot the dots
+    var serviceVsSalaryDim = ndx.dimension(function(d) {
+        //service will be used to plot x coordinate, salary used to plot the y, rank will be in hover tooltip sex is used to pass in the colors to the chart
+        return [d.yrs_service, d.salary, d.rank, d.sex];
+    });
+    var experienceSalaryGroup = serviceVsSalaryDim.group();
+
+    //we need min and max length of service - we take this from the serviceLength dim and use top and bottom
+    var minExperience = serviceDim.bottom(1)[0].yrs_service;
+    var maxExperience = serviceDim.top(1)[0].yrs_service;    
+
+    dc.scatterPlot("#service-salary")
+        .width(800)
+        .height(400)
+        //linear scale as we are dealing with numbers, and the domain will be min/maxExperince
+        .x(d3.scale.linear().domain([minExperience, maxExperience]))
+        .brushOn(false)
+        .symbolSize(8)
+        //leaves room near the top
+        .clipPadding(10)
+        .yAxisLabel("Salary")
+        .xAxisLabel("Years Of Service")
+        //what will appear as a tooltip when hovering over a dot
+        .title(function(d) {
+            //d.key[1] refers to the years of serviceVsSalary dim we created, and picks the d.salary value, d.key[2] refers to rank
+            return d.key[2] + " earned " + d.key[1];
+        })
+        //add colors to graph and specify how the chart can pick out the values it needs to pass in to the scale to pick the colors - need to add to serviceVsSalaryDim
+        .colorAccessor (function(d) {
+            return d.key[3];
+        })
+        .colors(genderColors)
+        .dimension(serviceVsSalaryDim)
+        .group(experienceSalaryGroup)
+        .margins({top: 10, right: 50, bottom: 75, left: 75});
 }
