@@ -9,6 +9,7 @@
     <title>Gender in Academia</title>
     <link rel="stylesheet" href="static/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="static/css/dc.min.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="static/css/style.css" type="text/css" />
 
     <script type="text/javascript" src="static/js/d3.min.js"></script>
@@ -21,71 +22,105 @@
 
 <body>
 
-    <div class="container">
+    <!--Navbar-->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Gender in Academia</a>
+            </div>
+        </div>
+    </nav>
 
-        <div class="row">
-            <h3>Gender In Academia</h3>
-        </div>
+    <main>
+        <section class="section">
+            <div class="container">
+                
+                
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                        <h1 class="section-heading">Gender in Academia</h1>
+                        <!--Select Menu - Discipline Selector-->
+                        <div id="discipline-selector"></div>
+                    </div>
+                </div>
 
-        <!--Select Menu-->
-        <div class="row">
-            <!--Select menu label-->
-            <div class="col-md-offset-5">Select Discipline</div>
-        </div>
+                <!--Percentage number displays-->
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                        <p class="section-paragraph">Gender in the professorial level:</p>
+                    </div>
+                    <!--Percentage of men and women who are professors - the same info presented in the stacked graph, but now as headline figures using number display-->
+                    <div class="col-xs-12 col-sm-6 col-lg-6">
+                        <i class="fa fa-female fa-gender" aria-hidden="true"></i> <span class="number-box" id="percent-of-women-professors"></span>
+                        <i class="fa fa-male fa-gender" aria-hidden="true"></i> <span class="number-box" id="percent-of-men-professors"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <!--Discipline Selector-->
-        <div class="row">
-            <!--Select menu to choose between two disciplines (A and B). The code behind it will be in graph.js-->
-            <div class="col-md-offset-5" id="discipline-selector"></div>
-        </div>
 
-        <!--Percentage number displays-->
-        <div class="row">
-            <!--Supportiing percentage number display text-->
-            <div class="col-md-6">Less than half of the female academics in the study are professors.</div>
-            <div class="col-md-6">A majority of the male academics are at the professor level.</div>
-        </div>
-        <div class="row">
-            <!--Percentage of men and women who are professors - the same info presented in the stacked graph, but now as headline figures using number display-->
-            <div class="col-md-6 number-box" id="percent-of-women-professors"></div>
-            <div class="col-md-6 number-box" id="percent-of-men-professors"></div>
-        </div>
+        <section class="section">
+            <div class="container">
+                
+                <!--Bar Charts-->
+                <div class="row">
+                    <!--Supportiing bar chart text-->
+                    <div class="col-xs-12 col-sm-4 text-center">
+                        <p class="section-paragraph">Men outnumber women 10 to 1</p>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 text-center">
+                        <p class="section-paragraph">Men earn on average about 15% more</p>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 text-center">
+                        <p class="section-paragraph">Distribution of ranks is weighted towards the upper level for men.</p>
+                    </div>
+                </div>
 
-        <!--Bar Charts-->
-        <div class="row">
-            <!--Supportiing bar chart text-->
-            <div class="col-md-4">Men outnumber women 10 to 1.</div>
-            <div class="col-md-4">Men earn, on average, 10% more.</div>
-            <div class="col-md-4">Distribution of ranks is weighted towards the upper level for men.</div>
-        </div>
-        <div class="row">
-            <!--Gender Balance Graph. The code behind it will be in graph.js-->
-            <div class="col-md-4" id="gender-balance"></div>
-            <!--Average Salary Graph. The code behind it will be in graph.js-->
-            <div class="col-md-4" id="average-salary"></div>
-            <!--Rank Distribution Graph - shows how men and women are distributed across the job ranks. The code behind it will be in graph.js-->
-            <div class="col-md-4" id="rank-distribution"></div>
-        </div>
-        
-        <!--Service salary scatter plot-->
-        <div class="row">
-            <!--Supportiing service salary scatter plot text-->
-            <div class="col-md-offset-2">There appears to be little or no correlation between salary and years of service.</div>
-        </div>
-        <div class="row">
-            <!--Service Salary scatter plot - correlation between years of service and salary-->
-            <div class="col-md-offset-2" id="service-salary"></div>
-        </div>
+                <div class="row">
+                    <!--Gender Balance Graph. The code behind it will be in graph.js-->
+                    <div class="col-xs-12 col-sm-4 text-center" id="gender-balance" class="custom-chart"></div>
+                    <!--Average Salary Graph. The code behind it will be in graph.js-->
+                    <div class="col-xs-12 col-sm-4 text-center" id="average-salary" class="custom-chart"></div>
+                    <!--Rank Distribution Graph - shows how men and women are distributed across the job ranks. The code behind it will be in graph.js-->
+                    <div class="col-xs-12 col-sm-4 text-center" id="rank-distribution" class="custom-chart"></div>
+                </div>
+            </div>
+        </section>
 
-        <!--PhD salary scatter plot-->
-        <div class="row">
-            <!--Supportiing PhD salary scatter plot text-->
-            <div class="col-md-offset-2">There is very loose correlation between salary and years since receiving a PhD.</div>
-        </div>
-        <!--Years since PhD and salary scatter plot - correlation between years of service and salary-->
-        <div class="col-md-offset-2" id="phd-salary"></div>
+        <section class="section">
+            <div class="container">
+                
+                <!--Service salary scatter plot-->
+                <div class="row">
+                    <!--Supportiing service salary scatter plot text-->
+                    <div class="col-xs-12 col-sm-12 text-center">
+                        <p class="section-paragraph">There appears to be little or no correlation between salary and years of service.</p>
+                    </div>
+                    
+                    <!--Service Salary scatter plot - correlation between years of service and salary-->
+                    <div class="col-xs-12 col-sm-12 text-center" id="service-salary"></div>
+                </div>
+            </div>
+        </section>
 
-    </div>
+        <section class="section">
+            <div class="container">
+                
+                <!--PhD salary scatter plot-->
+                <div class="row">
+                    <!--Supporting PhD salary scatter plot text-->
+                    <div class="col-xs-12 col-sm-12 text-center">
+                        <p class="section-paragraph">There is a very loose correlation between salary and years since receiving a PhD.</p>
+                    </div>
+                    
+                    <!--Years since PhD and salary scatter plot - correlation between years of service and salary-->
+                    <div class="col-xs-12 col-sm-12 text-center" id="phd-salary"></div>
+                    
+                </div>
+
+            </div>
+        </section>
+    </main>
 
 </body>
 

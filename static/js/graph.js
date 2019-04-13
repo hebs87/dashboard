@@ -100,8 +100,8 @@ function show_gender_balance(ndx) {
     var group = dim.group();
     
     dc.barChart("#gender-balance")
-        .width(400)
-        .height(300)
+        .width(350)
+        .height(250)
         .margins({top: 10, right: 50, bottom: 30, left: 50})
         .dimension(dim)
         .group(group)
@@ -146,8 +146,8 @@ function show_average_salary(ndx) {
     var averageSalaryByGender = dim.group().reduce(addItem, removeItem, initialise);
     
     dc.barChart("#average-salary")
-        .width(400)
-        .height(300)
+        .width(350)
+        .height(250)
         .margins({top: 10, right: 50, bottom: 30, left: 50})
         .dimension(dim)
         .group(averageSalaryByGender)
@@ -203,8 +203,8 @@ function show_rank_distribution(ndx) {
     var assocProfByGender = rankByGender(dim, "AssocProf");
     
     dc.barChart("#rank-distribution")
-        .width(400)
-        .height(300)
+        .width(350)
+        .height(250)
         .dimension(dim)
         //include a 2nd argument which is a label for the legend of the chart
         .group(profByGender, "Prof")
@@ -222,6 +222,7 @@ function show_rank_distribution(ndx) {
         })
         .x(d3.scale.ordinal())
         .xUnits(dc.units.ordinal)
+        .xAxisLabel("Gender")
         .legend(dc.legend().x(320).y(20).itemHeight(15).gap(5))
         .margins({top: 10, right: 100, bottom: 30, left: 30});
 }
