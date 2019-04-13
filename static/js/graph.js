@@ -9,6 +9,8 @@ function makeGraphs(error, salaryData) {
     salaryData.forEach(function(d) {
         //salary is = to an integer version of the salary
         d.salary = parseInt(d.salary);
+        //related to 2nd scatter plot - parse yrs.since.phd from string to integer and get rid of the dots by renaming it yrs_since_phd
+        d.yrs_since_phd = parseInt(d["yrs.since.phd"]);
         //relates to scatter-plot - wrapping in square brackets rather than using dot notation as yrs.service in csv file has dot, so would cause problems
         d.yrs_service = parseInt(d["yrs.service"]);
     });
@@ -28,6 +30,7 @@ function makeGraphs(error, salaryData) {
 
     //scatter plots
     show_service_to_salary_correlation(ndx);
+    show_phd_to_salary_correlation(ndx);
 
     dc.renderAll();
 }
@@ -268,3 +271,50 @@ function show_service_to_salary_correlation(ndx) {
         .group(experienceSalaryGroup)
         .margins({top: 10, right: 50, bottom: 75, left: 75});
 }
+
+//#phd-salary scatter plot - copied and pasted from #service-salary scatter plot and renamed some vars
+function show_phd_to_salary_correlation(ndx) {
+    //add colors to scatter plot - pick an attribute and map the values in that attribute to the colors we want
+    var genderColors = d3.scale.ordinal()
+        .domain("Female", "Male")
+        .range(["pink", "blue"]);
+    
+    //first dim on years of service
+    var phdServiceDim = ndx.dimension(dc.pluck("yrs_since_phd"));
+    //second dim returns array with two parts - one being length of service and other being the salary - this allows us to plot the dots
+    var phdSalaryDim = ndx.dimension(function(d) {
+        //service will be used to plot x coordinate, salary used to plot the y, rank will be in hover tooltip sex is used to pass in the colors to the chart
+        return [d.yrs_since_phd, d.salary, d.rank, d.sex];
+    });
+    var phdSalaryGroup = phdSalaryDim.group();
+
+    //we need min and max length of service - we take this from the serviceLength dim and use top and bottom
+    var minPhd = phdServiceDim.bottom(1)[0].yrs_since_phd;
+    var maxPhd = phdServiceDim.top(1)[0].yrs_since_phd;
+
+    dc.scatterPlot("#phd-salary")
+        .width(800)
+        .height(400)
+        //linear scale as we are dealing with numbers, and the domain will be min/maxExperince
+        .x(d3.scale.linear().domain([minPhd, maxPhd]))
+        .brushOn(false)
+        .symbolSize(8)
+        //leaves room near the top
+        .clipPadding(10)
+        .yAxisLabel("Salary")
+        .xAxisLabel("Years Since PhD")
+        //what will appear as a tooltip when hovering over a dot
+        .title(function(d) {
+            //d.key[1] refers to the years of serviceVsSalary dim we created, and picks the d.salary value, d.key[2] refers to rank
+            return d.key[2] + " earned " + d.key[1];
+        })
+        //add colors to graph and specify how the chart can pick out the values it needs to pass in to the scale to pick the colors - need to add to serviceVsSalaryDim
+        .colorAccessor (function(d) {
+            return d.key[3];
+        })
+        .colors(genderColors)
+        .dimension(phdSalaryDim)
+        .group(phdSalaryGroup)
+        .margins({top: 10, right: 50, bottom: 75, left: 75});
+}
+
