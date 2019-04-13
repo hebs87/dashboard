@@ -16,6 +16,10 @@ function makeGraphs(error, salaryData) {
     //create one for each graph
     show_discipline_selector(ndx);
 
+    //related to #percentage-of-women-professors & #percentage-of-men-professors divs
+    show_percent_that_are_professors(ndx, "Female", "#percent-of-women-professors");
+    show_percent_that_are_professors(ndx, "Male", "#percent-of-men-professors");
+
     show_gender_balance(ndx);
     show_average_salary(ndx);
     show_rank_distribution(ndx);
@@ -31,6 +35,52 @@ function show_discipline_selector(ndx) {
     dc.selectMenu("#discipline-selector")
         .dimension(dim)
         .group(group);
+}
+
+//#percentage-of-women-professors & #percentage-of-men-professors number selectors
+//function to calculate the percentage of male and female professors
+function show_percent_that_are_professors(ndx, gender, element) {
+    var percentageThatAreProf = ndx.groupAll().reduce(
+        function(p, v) {
+            //if sex is the specified gender this will increment the count
+            if (v.sex === gender) {
+                p.count++;
+                //if the second rank is "Prof" the this will increment the are_prof
+                if(v.rank === "Prof") {
+                    p.are_prof++;
+                }
+            }
+            return p;
+        },
+        function(p, v) {
+            //if sex is the specified gender this will decrement the count
+            if (v.sex === gender) {
+                p.count--;
+                //if the second rank is "Prof" the this will decrement the are_prof
+                if(v.rank === "Prof") {
+                    p.are_prof--;
+                }
+            }
+            return p;
+        },
+        function() {
+            //a count of total number of records and then a count of how many of those are profs
+            return {count: 0, are_prof: 0};    
+        },
+    );
+    
+    //because we have 2 separate divs, we need to specify the actual element rather than the id - element must also be the 3rd argument in the function
+    dc.numberDisplay(element)
+        //shows the number as a percentage to 2 decimal places
+        .formatNumber(d3.format(".2%"))
+        .valueAccessor(function (d) {
+            if (d.count == 0) {
+                return 0;
+            } else {
+                return (d.are_prof / d.count);
+            }
+        })
+        .group(percentageThatAreProf);
 }
 
 //inside this function, we can now focus on specifically one graph - each graph will have its own function
